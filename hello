@@ -1,0 +1,72 @@
+import numpy as np
+import matplotlib.pyplot as plot 
+
+def CMA_LSR_2(gam,Nss,delta,epsilon,mu,c,length):
+
+    V = np.array([[-1, 0,0,0,1,0,0,0,-1,0,1,0],[ 0,-1,0,0,0,1,0,0,0,-1,0,1],[0,0,-1,0,0,0,1,0,1,0,-1,0],[0,0,0,-1,0,0,0,1,0,1,0,-1]]) #Reaction matrix 
+    
+    w1=455
+    m1=0
+    w2=450
+    m2=50
+    
+    X = np.zeros(4);
+    X[0] = w1; # wildtype 1
+    X[1] = m1; #mutant 2
+    X[2]= w2
+    X[3]= m2
+    
+    #DNA storage vector
+    Xarray=np.zeros((4,length)) # (changes with tpoint)
+    Xarray[0,0]=w1
+    Xarray[1,0]=m1
+    Xarray[2,0]=w2
+    Xarray[3,0]=m2
+       
+   #Time start point, time points and time storage vector
+    t = 0;
+    tpoint=np.linspace(0,30000,length)
+    tarray=np.zeros(length)  #(changes with t point)
+    
+    
+    #counter for the time points 
+    k=0
+    for i in tpoint:   
+      #  stats=np.zeros(11)
+        while t < i:
+            rand=np.random.uniform(0,1,1)
+            A = np.zeros((12,1))
+            A[0]= mu*X[0]; 
+            A[1]= (mu+epsilon)*X[1];
+            A[2]= mu*X[2];
+            A[3]= (mu+epsilon)*X[3];
+            A[4] = (mu+c*(Nss- X[0]-delta*X[1]))*X[0];
+            A[5] = (mu+c*(Nss- X[0]-delta*X[1]))*X[1];
+            A[6] = (mu+c*(Nss- X[2]-delta*X[3]))*X[2];
+            A[7] = (mu+c*(Nss- X[2]-delta*X[3]))*X[3];
+            A[8] =gam*X[0]
+            A[9]=gam*X[1]
+            A[10]=gam*X[2]
+            A[11]=gam*X[3]
+            
+          
+            asum = sum(A);
+            if asum==0:
+                break
+            
+
+            j = min(np.argwhere(rand<np.cumsum(A/asum))[:,0]);
+          
+            
+            tau = np.log(1/rand)/asum;
+            X=X+ np.transpose(V[:,j]);
+            t=t+ tau;
+            
+            Xarray[:,k]=X
+            tarray[k]=t
+            
+        k=k+1
+       # print(stats)
+        
+       
+    return(Xarray,tarray)
