@@ -70,3 +70,24 @@ def CMA_LSR_2(gam,Nss,delta,epsilon,mu,c,length):
         
        
     return(Xarray,tarray)
+    
+#############################################################################
+#### Plot ###################################################################
+#############################################################################
+
+
+Xarraymax1=Xarraymax2=Xarraymax3=0
+Hetmax1=Hetmax2=Hetmax3=0
+lengt=601
+iterations=1
+nss=325
+delta=0.1
+mu=0.07
+c=0.0025
+
+#Mild change = 0.0002935
+#bigchange = 0.0011735
+for i in range(iterations):
+    Xarray1,tarray = CMA_LSR(nss,delta,0.0,mu,c,lengt)
+    Xarray2,tarray = CMA_LSR(nss,delta,0.0002935,mu,c,lengt)
+    Xarray3,tarray = CMA_LSR(nss,delta,0.0011735,mu,c,lengt)
